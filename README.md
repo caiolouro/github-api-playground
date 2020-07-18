@@ -1,3 +1,3 @@
 # GitHub API Playground
 
-Solution to play around with the GitHub API using a .NET Core console application.
+Project to play around with the GitHub API using a .NET Core console application, .NET Core CLI and Visual Studio Code.
