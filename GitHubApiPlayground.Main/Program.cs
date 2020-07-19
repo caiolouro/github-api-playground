@@ -26,12 +26,15 @@ namespace GitHubApiPlayground
 
 			var githubApiClient = services.GetService<GitHubApiClient>();
 
-			var repos = await githubApiClient.GetRepos("https://api.github.com/users/caiolouro/repos");
+			var repos = await githubApiClient.GetWatchedRepos("caiolouro");
 			foreach (var repo in repos)
 			{
-				Console.WriteLine(repo.Name);
-				Console.WriteLine(repo.URL);
-				Console.WriteLine(repo.LastPushedAt);
+				if (repo.Name.ToLowerInvariant().StartsWith("vtex/"))
+				{
+					Console.WriteLine(repo.Name);
+				}
+				// Console.WriteLine(repo.URL);
+				// Console.WriteLine(repo.LastPushedAt);
 				Console.WriteLine();
 			}
 

@@ -5,7 +5,7 @@ namespace GitHubApiPlayground
 {
     public class Repo
     {
-        [JsonPropertyName("name")]
+        [JsonPropertyName("full_name")]
         public string Name { get; set; }
 
         [JsonPropertyName("html_url")]
