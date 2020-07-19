@@ -4,18 +4,29 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitHubApiPlayground
 {
-    class Program
+    public class Program
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+		public static IConfigurationRoot Configuration { get; set; }
 
-        static async Task Main(string[] args)
-        {
-            // Console.WriteLine("Hello World!");
+		static async Task Main(string[] args)
+		{
+			var builder = new ConfigurationBuilder();
+			builder.AddUserSecrets<Program>();
+			Configuration = builder.Build();
 
-			var repos = await GetRepos();
+			var services = new ServiceCollection()
+				.Configure<GitHubSettings>(Configuration.GetSection(nameof(GitHubSettings)))
+				.AddSingleton<GitHubApiClient>()
+				.BuildServiceProvider();
+
+			var githubApiClient = services.GetService<GitHubApiClient>();
+
+			var repos = await githubApiClient.GetRepos("https://api.github.com/users/caiolouro/repos");
 			foreach (var repo in repos)
 			{
 				Console.WriteLine(repo.Name);
@@ -23,12 +34,8 @@ namespace GitHubApiPlayground
 				Console.WriteLine(repo.LastPushedAt);
 				Console.WriteLine();
 			}
-        }
 
-        private static async Task<List<Repo>> GetRepos()
-        {
-			var reposResponse = GitHubApiClient.GetStream("https://api.github.com/users/caiolouro/repos");
-			return await JsonSerializer.DeserializeAsync<List<Repo>>(await reposResponse);
-        }
+			Console.WriteLine("Hello World!");
+		}
     }
 }
