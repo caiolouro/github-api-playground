@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/github-api-playground/bin/Debug/netcoreapp3.1/github-api-playground.dll",
+            "program": "${workspaceFolder}/GitHubApiPlayground.Main/bin/Debug/netcoreapp3.1/GitHubApiPlayground.Main.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/github-api-playground",
+            "cwd": "${workspaceFolder}/GitHubApiPlayground.Main",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
