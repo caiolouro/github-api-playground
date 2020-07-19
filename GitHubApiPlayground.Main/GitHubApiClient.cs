@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,29 +29,18 @@ namespace GitHubApiPlayground
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
         }
 
-        public async Task<List<Repo>> GetRepos(string username)
+        public async Task<List<Repo>> GetUserRepos(string username)
         {
             var response = _httpClient.GetStreamAsync($"https://api.github.com/users/{username}/repos");
             return await JsonSerializer.DeserializeAsync<List<Repo>>(await response);
         }
 
-        public async Task<List<Repo>> GetWatchedRepos(string username)
+        public async Task<List<Repo>> GetWatchedByAuthUserRepos()
         {
-            // var response = await _httpClient.GetAsync($"https://api.github.com/users/{username}/subscriptions?page=4");
-
-			// var nextUri = GetNextUriFromLinkResponseHeader(response.Headers.GetValues("Link").FirstOrDefault());
-			// Console.WriteLine($"nextUri {nextUri}");
-
-            // return await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
-
-            // var response = _httpClient.GetStreamAsync($"https://api.github.com/users/{username}/subscriptions");
-            // response.Headers
-            // return await JsonSerializer.DeserializeAsync<List<Repo>>(await response);
-
+            Console.WriteLine("Fetching watched repos...");
 			var repos = new List<Repo>();
 
-			var uri = $"https://api.github.com/users/{username}/subscriptions?per_page=100";
-			Console.WriteLine($"firstUri {uri}");
+			var uri = $"https://api.github.com/user/subscriptions?per_page=100";
 
 			while (uri != null)
 			{
@@ -60,18 +48,28 @@ namespace GitHubApiPlayground
 				var reposChunk = await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
 				repos.AddRange(reposChunk.ToList());
 
-				uri = GetNextUriFromLinkResponseHeader(response.Headers.GetValues("Link").FirstOrDefault());
-				Console.WriteLine($"nextUri {uri}");
+                try
+                {
+                    uri = GetNextUriFromLinkResponseHeader(response.Headers.GetValues("Link").FirstOrDefault());
+                }
+                catch (Exception)
+                {
+                    uri = null;
+                }				
 			}
 
-			Console.WriteLine($"repos {repos.Count}");
+			Console.WriteLine($"{repos.Count} watched repos found.");
 			return repos;
         }
 
-        public async Task<List<Repo>> GetWatchedReposFromAuthUser()
+        public async Task<string> DeleteRepoSubscriptionForAuthUser(Repo repo)
         {
-            var response = _httpClient.GetStreamAsync($"https://api.github.com/user/subscriptions");
-            return await JsonSerializer.DeserializeAsync<List<Repo>>(await response);
+            var response = await _httpClient.DeleteAsync($"https://api.github.com/repos/{repo.FullName}/subscription");
+
+            if (response.IsSuccessStatusCode) Console.WriteLine($"Subscription deleted for {repo.FullName}.");
+            else Console.WriteLine("Error while trying to delete subscription for {repo.FullName}: {response.ReasonPhrase}");
+
+            return response.ReasonPhrase;
         }
 
         public void PrintSecret()

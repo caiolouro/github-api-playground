@@ -26,19 +26,18 @@ namespace GitHubApiPlayground
 
 			var githubApiClient = services.GetService<GitHubApiClient>();
 
-			var repos = await githubApiClient.GetWatchedRepos("caiolouro");
+			var repos = await githubApiClient.GetWatchedByAuthUserRepos();
+
+			// Unwatch repos that I'm not working anymore
 			foreach (var repo in repos)
 			{
-				if (repo.Name.ToLowerInvariant().StartsWith("vtex/"))
-				{
-					Console.WriteLine(repo.Name);
-				}
-				// Console.WriteLine(repo.URL);
-				// Console.WriteLine(repo.LastPushedAt);
-				Console.WriteLine();
-			}
+				Console.WriteLine(repo.FullName);
 
-			Console.WriteLine("Hello World!");
+				if (repo.Owner.Login.Equals("vtex") || repo.Owner.Login.Equals("vtex-gocommerce") || repo.Owner.Login.Equals("mlcunha"))
+				{
+					if (!repo.FullName.Equals("vtex/catalog")) await githubApiClient.DeleteRepoSubscriptionForAuthUser(repo);					
+				}
+			}
 		}
     }
 }
