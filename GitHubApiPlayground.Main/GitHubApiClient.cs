@@ -23,9 +23,9 @@ namespace GitHubApiPlayground
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "caiolouro");
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", _settings.Username);
 
-            var authToken = Encoding.ASCII.GetBytes($"caiolouro:{_settings.Token}");
+            var authToken = Encoding.ASCII.GetBytes($"{_settings.Username}:{_settings.Token}");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
         }
 
@@ -70,11 +70,6 @@ namespace GitHubApiPlayground
             else Console.WriteLine("Error while trying to delete subscription for {repo.FullName}: {response.ReasonPhrase}");
 
             return response.ReasonPhrase;
-        }
-
-        public void PrintSecret()
-        {
-            Console.WriteLine($"Token is {_settings.Token}");
         }
 
         private static string GetNextUriFromLinkResponseHeader(string rawValue)

@@ -28,15 +28,15 @@ namespace GitHubApiPlayground
 
 			var repos = await githubApiClient.GetWatchedByAuthUserRepos();
 
-			// Unwatch repos that I'm not working anymore
 			foreach (var repo in repos)
 			{
 				Console.WriteLine(repo.FullName);
 
-				if (repo.Owner.Login.Equals("vtex") || repo.Owner.Login.Equals("vtex-gocommerce") || repo.Owner.Login.Equals("mlcunha"))
-				{
-					if (!repo.FullName.Equals("vtex/catalog")) await githubApiClient.DeleteRepoSubscriptionForAuthUser(repo);					
-				}
+				// Unwatch repos that I'm not working anymore
+				// if (repo.Owner.Login.Equals("vtex") || repo.Owner.Login.Equals("vtex-gocommerce") || repo.Owner.Login.Equals("mlcunha"))
+				// {
+				// 	if (!repo.FullName.Equals("vtex/catalog")) await githubApiClient.DeleteRepoSubscriptionForAuthUser(repo);					
+				// }
 			}
 		}
     }
