@@ -11,33 +11,33 @@ namespace GitHubApiPlayground
 {
     public class Program
     {
-		public static IConfigurationRoot Configuration { get; set; }
+        public static IConfigurationRoot Configuration { get; set; }
 
-		static async Task Main(string[] args)
-		{
-			var builder = new ConfigurationBuilder();
-			builder.AddUserSecrets<Program>();
-			Configuration = builder.Build();
+        static async Task Main(string[] args)
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddUserSecrets<Program>();
+            Configuration = builder.Build();
 
-			var services = new ServiceCollection()
-				.Configure<GitHubSettings>(Configuration.GetSection(nameof(GitHubSettings)))
-				.AddSingleton<GitHubApiClient>()
-				.BuildServiceProvider();
+            var services = new ServiceCollection()
+                .Configure<GitHubSettings>(Configuration.GetSection(nameof(GitHubSettings)))
+                .AddSingleton<GitHubApiClient>()
+                .BuildServiceProvider();
 
-			var githubApiClient = services.GetService<GitHubApiClient>();
+            var githubApiClient = services.GetService<GitHubApiClient>();
 
-			var repos = await githubApiClient.GetWatchedByAuthUserRepos();
+            var repos = await githubApiClient.GetWatchedByAuthUserRepos();
 
-			foreach (var repo in repos)
-			{
-				Console.WriteLine(repo.FullName);
+            foreach (var repo in repos)
+            {
+                Console.WriteLine(repo.FullName);
 
-				// Unwatch repos that I'm not working anymore
-				// if (repo.Owner.Login.Equals("vtex") || repo.Owner.Login.Equals("vtex-gocommerce") || repo.Owner.Login.Equals("mlcunha"))
-				// {
-				// 	if (!repo.FullName.Equals("vtex/catalog")) await githubApiClient.DeleteRepoSubscriptionForAuthUser(repo);					
-				// }
-			}
-		}
+                // Unwatch some repos
+                if (repo.Owner.Login.Equals("vtex") || repo.Owner.Login.Equals("vtex-gocommerce"))
+                {
+                    if (!repo.FullName.Equals("vtex/catalog")) await githubApiClient.DeleteRepoSubscriptionForAuthUser(repo);
+                }
+            }
+        }
     }
 }

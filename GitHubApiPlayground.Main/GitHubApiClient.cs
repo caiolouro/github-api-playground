@@ -38,15 +38,15 @@ namespace GitHubApiPlayground
         public async Task<List<Repo>> GetWatchedByAuthUserRepos()
         {
             Console.WriteLine("Fetching watched repos...");
-			var repos = new List<Repo>();
+            var repos = new List<Repo>();
 
-			var uri = $"https://api.github.com/user/subscriptions?per_page=100";
+            var uri = $"https://api.github.com/user/subscriptions?per_page=100";
 
-			while (uri != null)
-			{
-				var response = await _httpClient.GetAsync(uri);
-				var reposChunk = await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
-				repos.AddRange(reposChunk.ToList());
+            while (uri != null)
+            {
+                var response = await _httpClient.GetAsync(uri);
+                var reposChunk = await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
+                repos.AddRange(reposChunk.ToList());
 
                 try
                 {
@@ -55,11 +55,11 @@ namespace GitHubApiPlayground
                 catch (Exception)
                 {
                     uri = null;
-                }				
-			}
+                }
+            }
 
-			Console.WriteLine($"{repos.Count} watched repos found.");
-			return repos;
+            Console.WriteLine($"{repos.Count} watched repos found.");
+            return repos;
         }
 
         public async Task<string> DeleteRepoSubscriptionForAuthUser(Repo repo)
@@ -94,7 +94,7 @@ namespace GitHubApiPlayground
                 }
             }
 
-			return null;
+            return null;
         }
     }
 }
