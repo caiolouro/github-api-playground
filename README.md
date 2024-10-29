@@ -1,5 +1,7 @@
 # GitHub API Playground
 
+[Nested README](docs/README.md) or [like this](/docs/README.md) or even [like this](./docs/README.md)
+
 ## Summary
 
 This is a code playground to communicate with the GitHub API using a .NET Core 3.x console application. The chosen IDE was Visual Studio Code and the package management was done with the .NET Core CLI.

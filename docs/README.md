@@ -1,0 +1,1 @@
+Just a test to test links inside repo. So: [root README](../README.md) or [like this](README.md)
